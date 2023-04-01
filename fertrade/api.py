@@ -1,6 +1,7 @@
 import requests
 import json
 from api_models import *
+import time
 
 user = "fertrade"
 secret = "43b50579b79eafb9403f92cb4c6f9e64"
@@ -23,12 +24,13 @@ def getAllPairs():
             if currPair[0] == "close":
                 closedDict[newPair] = value
             if currPair[0] == "volume":
-                volumeDict[newPair] = value            
+                volumeDict[newPair] = value       
     return closedDict, volumeDict
 
 #predati listu klasa CurrencyPairova
 #pulla nove vrijednosti i spremi u Close i Volume dictove
-def getPair(pairs):
+def getPairs(pairs):
+    if not pairs: return dict(), dict()
     stringPairs: str = "|".join([",".join([pair.inCurr, pair.outCurr]) for pair in pairs])
     response_API = requests.get(rootApi + "/getPairs/" + stringPairs)
     allPairs = json.loads(response_API.text)
@@ -51,8 +53,10 @@ def getPair(pairs):
 #predati listu klasa Order
 #vraca true ili false
 def createOrders(orders):
+    t0 = time.time()
     stringOrder: str = "|".join([",".join([order.currencyPair.inCurr, order.currencyPair.outCurr, str(order.amount)]) for order in orders])
     response_API = requests.get(rootApi + "/createOrders/" + user + "/" + secret + "/" + stringOrder)
+    print(time.time() - t0)
     return response_API.status_code == 200
 
 def getBalance():
@@ -63,3 +67,5 @@ def getBalance():
 def resetBalance():
     response_API = requests.get(rootApi + "/resetBalance/" + user + "/" + secret)   
     return response_API.status_code == 200
+
+# createOrders([Order(currencyPair=CurrencyPair("USDT", "ACA"), amount=100), Order(currencyPair=CurrencyPair("USDT", "ACA"), amount=1000), Order(currencyPair=CurrencyPair("USDT", "ACA"), amount=1000)])

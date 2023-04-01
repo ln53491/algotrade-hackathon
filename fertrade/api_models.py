@@ -13,3 +13,5 @@ volumeDict = dict()
 
 closedDict_prevTick = dict()
 volumeDict_prevTick = dict()
+
+currNodes = []
