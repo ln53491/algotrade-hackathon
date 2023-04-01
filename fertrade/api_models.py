@@ -7,7 +7,9 @@ class CurrencyPair(NamedTuple):
 class Order(NamedTuple):
     currencyPair: CurrencyPair
     amount: int
-
+    
+global closedDict
+global volumeDict
 closedDict = dict()
 volumeDict = dict()
 

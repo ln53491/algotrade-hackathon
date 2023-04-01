@@ -55,9 +55,9 @@ def getPairs(pairs):
 def createOrders(orders):
     t0 = time.time()
     stringOrder: str = "|".join([",".join([order.currencyPair.inCurr, order.currencyPair.outCurr, str(order.amount)]) for order in orders])
-    response_API = requests.get(rootApi + "/createOrders/" + user + "/" + secret + "/" + stringOrder)
-    print(time.time() - t0)
-    return response_API.status_code == 200
+    order = rootApi + "/createOrders/" + user + "/" + secret + "/" + stringOrder
+    response_API = requests.get(order)
+    print(order)
 
 def getBalance():
     response_API = requests.get(rootApi + "/balance/" + user)
