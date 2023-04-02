@@ -3,8 +3,8 @@ import json
 from api_models import *
 import time
 
-user = "fertrade"
-secret = "43b50579b79eafb9403f92cb4c6f9e64"
+user = "fertrade2"
+secret = "9c16e7c5df5ec5d9bd74bf17f441a8ba"
 rootApi = "http://192.168.1.101:3000"
 
 #counter tickova
@@ -53,11 +53,12 @@ def getPairs(pairs):
 #predati listu klasa Order
 #vraca true ili false
 def createOrders(orders):
-    t0 = time.time()
+    if len(orders) == 0: return 400, "Empty orders list."
     stringOrder: str = "|".join([",".join([order.currencyPair.inCurr, order.currencyPair.outCurr, str(order.amount)]) for order in orders])
     order = rootApi + "/createOrders/" + user + "/" + secret + "/" + stringOrder
     response_API = requests.get(order)
-    print(order)
+    print(f"Order: {stringOrder}")
+    return response_API.status_code, response_API.detail if hasattr(response_API, "detail") else response_API.status_code
 
 def getBalance():
     response_API = requests.get(rootApi + "/balance/" + user)

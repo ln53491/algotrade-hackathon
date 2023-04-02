@@ -6,13 +6,24 @@ allowedPerSecond = 5
 pingInterval = 1 / allowedPerSecond + 0.05
 
 global currStartTime
+global startReturningToUSDT
+startReturningToUSDT = False
 currStartTime = 0
 currTick = getTime()
 time.sleep(pingInterval)
 
 def startAlgorithm():
-    algorithm()
-    threading.Timer(tickSecondDuration, startAlgorithm).start()
+    global startReturningToUSDT
+    if not startReturningToUSDT:
+        algorithm()
+        threading.Timer(tickSecondDuration, startAlgorithm).start()
+        # threading.Timer(2, setReturningToTrue).start()
+    else:
+        returnToUSDT()
+
+def setReturningToTrue():
+    global startReturningToUSDT
+    startReturningToUSDT = True
 
 def synchronize():
     global currStartTime
