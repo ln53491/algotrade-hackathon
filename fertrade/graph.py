@@ -35,6 +35,15 @@ class Node:
 global first
 first = False
 
+allValues = []
+def drawGraph(currency):
+    global closedDict
+    oldClosedDict = copy.deepcopy(closedDict)
+    closedDict, volumeDict = getAllPairs()
+    if not oldClosedDict.__contains__(CurrencyPair("USDT", currency)):
+        return 0
+    return (closedDict[CurrencyPair("USDT", currency)] - oldClosedDict[CurrencyPair("USDT", currency)]) / oldClosedDict[CurrencyPair("USDT", currency)] * 100
+
 def algorithm():
     global first
     global closedDict
@@ -116,7 +125,7 @@ def algorithm():
                     larinaFormula = currBalance[currNode] * newClosedDict[pair] / 10**16 * reverseClosedDict[reversePair]
                     koeficijent = closedDict[pair]/oldClosedDict[pair]
                     staminTeorem = larinaFormula * koeficijent
-                    calculatedClosedDict[pair] = staminTeorem
+                    calculatedClosedDict[pair] = larinaFormula
             sortedCalculatedClosedDict = dict(sorted(calculatedClosedDict.items(), key=lambda x:x[1]))
             if len(list(sortedCalculatedClosedDict.keys())) >= 2:
                 if len(currBalance.keys()) < 5:
@@ -139,20 +148,23 @@ def returnToUSDT():
     global closedDict
     global volumeDict
     global currNodes
+    print("\n!!!!! Start going back to usd !!!!!")
     currBalance = getBalance()
     currBalance = {x:y for x,y in currBalance.items() if y!=0}
     closedDict, volumeDict = getAllPairs()
+    if list(currBalance.keys()) == ["USDT"]: return
     for currNode in list(currBalance.keys()):
+        if currNode == "USDT": continue
         wantedPair = CurrencyPair(inCurr=currNode, outCurr="USDT")
         if closedDict.__contains__(wantedPair):
-            if not createOrders([Order(currencyPair=wantedPair, amount=currBalance[currNode])]):
+            statusCode, errMsg = createOrders([Order(currencyPair=wantedPair, amount=currBalance[currNode])])
+            if statusCode != 200:
+                print(errMsg)
                 time.sleep(3)
                 algorithm()
                 returnToUSDT()
             else:
                 for idx,node in enumerate(copy.deepcopy(currNodes)):
-                    print(f"CURNNODDESS: {currNodes}")
-                    print(f"CURNNODDESS222: {node}")
                     if node.currency == currNode:
                         del currNodes[idx]
         else:

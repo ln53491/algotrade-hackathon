@@ -3,8 +3,8 @@ import json
 from api_models import *
 import time
 
-user = "fertrade2"
-secret = "9c16e7c5df5ec5d9bd74bf17f441a8ba"
+user = "fertrade"
+secret = "eb213e6b6370120744c0992026387312"
 rootApi = "http://192.168.1.101:3000"
 
 #counter tickova
@@ -68,5 +68,3 @@ def getBalance():
 def resetBalance():
     response_API = requests.get(rootApi + "/resetBalance/" + user + "/" + secret)   
     return response_API.status_code == 200
-
-# createOrders([Order(currencyPair=CurrencyPair("USDT", "ACA"), amount=100), Order(currencyPair=CurrencyPair("USDT", "ACA"), amount=1000), Order(currencyPair=CurrencyPair("USDT", "ACA"), amount=1000)])
